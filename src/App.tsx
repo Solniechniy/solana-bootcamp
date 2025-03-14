@@ -51,6 +51,7 @@ const App: React.FC = () => {
       );
     },
   });
+  console.log("walletAddress", walletAddress);
 
   const [currentPage, setCurrentPage] = useState({
     orders: 1,
