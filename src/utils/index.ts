@@ -62,9 +62,9 @@ export const query = gql`
   }
 `;
 
-export const userOffers = gql`
+export const getUserOffers = (acctMaker: string) => gql`
   {
-    offers(where: { acctMaker: $acctMaker }) {
+    offers(where: { acctMaker: "${acctMaker}" }) {
       id
       closed
       trxHashOffer

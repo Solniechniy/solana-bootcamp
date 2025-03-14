@@ -17,7 +17,7 @@ import {
   TooltipProvider,
   TooltipTrigger,
 } from "@/components/ui/tooltip";
-import { getMetadata, truncateAddress, userOffers } from "@/utils";
+import { getMetadata, getUserOffers, truncateAddress } from "@/utils";
 import { Button } from "@/components/ui/button";
 import { Offer } from "@/types/offer";
 import { config } from "@/solana-service/config";
@@ -84,15 +84,14 @@ export default function AccountOffers({
   setIsWalletConnected: (isWalletConnected: boolean) => void;
   loading: boolean;
 }) {
-  const { wallet } = useWallet();
+  const { publicKey } = useWallet();
 
-  const { data: paginatedAccountOffers } = useQuery({
-    queryKey: ["offers"],
+  const { data: paginatedAccountOffers, refetch } = useQuery({
+    queryKey: ["user-offers"],
     async queryFn() {
       return await request<{ offers: Offer[] | undefined }>(
         config.subgraphUrl,
-        userOffers,
-        { acctMaker: wallet }
+        getUserOffers(publicKey?.toBase58() ?? "")
       );
     },
   });
@@ -111,6 +110,7 @@ export default function AccountOffers({
                 onClick={() => {
                   try {
                     disconnect();
+                    refetch();
                     setIsWalletConnected(false);
                   } catch (e) {
                     console.log("Error disconnecting", e);
