@@ -27,7 +27,7 @@ import { WalletAdapterNetwork } from "@solana/wallet-adapter-base";
 
 import { EscrowProgram } from "@/solana-service/program";
 import { Wallet } from "@coral-xyz/anchor";
-import { OrdersPage } from "@/pages/all-offers";
+import { OffersPage } from "@/pages/all-offers";
 import { OpenOffersPage } from "@/pages/open-offers";
 import AccountOffers from "@/pages/account-offers";
 import { Offer } from "@/types/offer";
@@ -63,7 +63,7 @@ const App: React.FC = () => {
 
   const ITEMS_PER_PAGE = 5;
 
-  const paginatedOrders = data?.offers?.slice(
+  const paginatedOffers = data?.offers?.slice(
     (currentPage.orders - 1) * ITEMS_PER_PAGE,
     currentPage.orders * ITEMS_PER_PAGE
   );
@@ -138,16 +138,16 @@ const App: React.FC = () => {
         </h1>
         <Tabs defaultValue="orders" className="w-full">
           <TabsList className="grid w-full grid-cols-3">
-            <TabsTrigger value="orders">Orders</TabsTrigger>
+            <TabsTrigger value="orders">All Offers</TabsTrigger>
             <TabsTrigger value="openOffers">Open Offers</TabsTrigger>
             <TabsTrigger value="accountOffers">Account Offers</TabsTrigger>
           </TabsList>
 
           <TabsContent value="orders">
-            <OrdersPage
+            <OffersPage
               isWalletConnected={isWalletConnected}
               connectWallet={connectWallet}
-              paginatedOrders={paginatedOrders}
+              paginatedOffers={paginatedOffers}
               currentPage={currentPage.orders}
               totalPages={totalPages.orders}
               onPageChange={(page) => handlePageChange("orders", page)}

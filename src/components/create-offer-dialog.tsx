@@ -29,15 +29,15 @@ import { useAnchorWallet } from "@solana/wallet-adapter-react";
 import { Wallet } from "@coral-xyz/anchor";
 import { getMetadata, METADATA } from "@/utils";
 
-interface CreateOrderDialogProps {
+interface CreateOfferDialogProps {
   isWalletConnected: boolean;
   onConnectWallet: () => Promise<void>;
 }
 
-export function CreateOrderDialog({
+export function CreateOfferDialog({
   isWalletConnected,
   onConnectWallet,
-}: CreateOrderDialogProps) {
+}: CreateOfferDialogProps) {
   const [isOpen, setIsOpen] = useState(false);
   const [isSubmitting, setIsSubmitting] = useState(false);
   const wallet = useAnchorWallet();
@@ -77,7 +77,7 @@ export function CreateOrderDialog({
         Number(formData.amountB)
       );
 
-      toast("Order created");
+      toast("Offer created");
 
       setFormData({
         tokenA:
@@ -89,7 +89,7 @@ export function CreateOrderDialog({
       });
       setIsOpen(false);
     } catch (error) {
-      toast("Error creating order");
+      toast("Error creating Offer");
     } finally {
       setIsSubmitting(false);
     }
@@ -137,13 +137,13 @@ export function CreateOrderDialog({
   return (
     <Dialog open={isOpen} onOpenChange={setIsOpen}>
       <DialogTrigger asChild>
-        <Button>Create New Order</Button>
+        <Button>Create New Offer</Button>
       </DialogTrigger>
       <DialogContent className="sm:max-w-[425px]">
         <DialogHeader>
-          <DialogTitle>Create Order</DialogTitle>
+          <DialogTitle>Create Offer</DialogTitle>
           <DialogDescription>
-            Create a new order to exchange tokens. You offer one token and
+            Create a new Offer to exchange tokens. You offer one token and
             receive another.
           </DialogDescription>
         </DialogHeader>
@@ -246,7 +246,7 @@ export function CreateOrderDialog({
               ) : !isWalletConnected ? (
                 "Connect Wallet to Create"
               ) : (
-                "Create Order"
+                "Create Offer"
               )}
             </Button>
           </DialogFooter>
