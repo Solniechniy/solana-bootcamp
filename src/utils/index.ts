@@ -35,7 +35,36 @@ export function getMetadata(tokenId?: string) {
 
 export const query = gql`
   {
-    offers(first: 5) {
+    offers(first: 100) {
+      id
+      closed
+      trxHashOffer
+      trxHashTake
+
+      tokenAOfferedAmount
+      tokenBWantedAmount
+
+      acctMaker
+      acctTaker
+
+      acctTokenMintA
+      acctTokenMintB
+
+      acctMakerTokenAccountA
+      acctTakerTokenAccountA
+      acctTakerTokenAccountB
+      acctMakerTokenAccountB
+
+      acctOffer
+      acctVault
+      acctTokenProgram
+    }
+  }
+`;
+
+export const userOffers = gql`
+  {
+    offers(where: { acctMaker: $acctMaker }) {
       id
       closed
       trxHashOffer

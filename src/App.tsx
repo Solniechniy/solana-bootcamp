@@ -18,7 +18,7 @@ import { toast } from "sonner";
 import { Loader2 } from "lucide-react";
 import { useAnchorWallet, useWallet } from "@solana/wallet-adapter-react";
 
-import { useQuery } from "@tanstack/react-query";
+import { useQuery, useQueryClient } from "@tanstack/react-query";
 import { request } from "graphql-request";
 import { config } from "@/solana-service/config";
 import { Connection, PublicKey } from "@solana/web3.js";
@@ -41,6 +41,7 @@ const App: React.FC = () => {
   const [selectedOffer, setSelectedOffer] = useState<Offer | null>(null);
   const [walletAddress, setWalletAddress] = useState<string | null>(null);
   const wallet = useAnchorWallet();
+  const queryClient = useQueryClient();
 
   const { data } = useQuery({
     queryKey: ["offers"],
@@ -75,8 +76,6 @@ const App: React.FC = () => {
       (currentPage.openOffers - 1) * ITEMS_PER_PAGE,
       currentPage.openOffers * ITEMS_PER_PAGE
     );
-
-  const paginatedAccountOffers = data?.offers;
 
   const totalPages = {
     orders: Math.ceil((data?.offers?.length ?? 1) / ITEMS_PER_PAGE),
@@ -117,6 +116,7 @@ const App: React.FC = () => {
     } catch (e) {
       toast.error("Error taking offer");
     } finally {
+      queryClient.invalidateQueries({ queryKey: ["offers"] });
       setLoading(false);
     }
   };
@@ -173,7 +173,6 @@ const App: React.FC = () => {
               isWalletConnected={isWalletConnected}
               disconnect={disconnect}
               setIsWalletConnected={setIsWalletConnected}
-              paginatedAccountOffers={paginatedAccountOffers}
               loading={loading}
             />
           </TabsContent>

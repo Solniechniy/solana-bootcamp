@@ -28,6 +28,7 @@ import { useAnchorWallet, useWallet } from "@solana/wallet-adapter-react";
 
 import { Wallet } from "@coral-xyz/anchor";
 import { getMetadata, METADATA } from "@/utils";
+import { useQueryClient } from "@tanstack/react-query";
 
 interface CreateOfferDialogProps {
   isWalletConnected: boolean;
@@ -46,6 +47,7 @@ export function CreateOfferDialog({
     amountA: "0",
     amountB: "0",
   });
+  const queryClient = useQueryClient();
 
   const handleSubmit = async (e: React.FormEvent) => {
     e.preventDefault();
@@ -91,6 +93,7 @@ export function CreateOfferDialog({
     } catch (error) {
       toast("Error creating Offer");
     } finally {
+      queryClient.invalidateQueries({ queryKey: ["offers"] });
       setIsSubmitting(false);
     }
   };

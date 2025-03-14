@@ -17,9 +17,13 @@ import {
   TooltipProvider,
   TooltipTrigger,
 } from "@/components/ui/tooltip";
-import { getMetadata, truncateAddress } from "@/utils";
+import { getMetadata, truncateAddress, userOffers } from "@/utils";
 import { Button } from "@/components/ui/button";
 import { Offer } from "@/types/offer";
+import { config } from "@/solana-service/config";
+import request from "graphql-request";
+import { useQuery } from "@tanstack/react-query";
+import { useWallet } from "@solana/wallet-adapter-react";
 
 function AccountOfferItem({ offer }: { offer: Offer }) {
   const metadataTokenA = getMetadata(offer.acctTokenMintA);
@@ -73,15 +77,26 @@ export default function AccountOffers({
   isWalletConnected,
   disconnect,
   setIsWalletConnected,
-  paginatedAccountOffers,
   loading,
 }: {
   isWalletConnected: boolean;
   disconnect: () => void;
   setIsWalletConnected: (isWalletConnected: boolean) => void;
-  paginatedAccountOffers?: Offer[];
   loading: boolean;
 }) {
+  const { wallet } = useWallet();
+
+  const { data: paginatedAccountOffers } = useQuery({
+    queryKey: ["offers"],
+    async queryFn() {
+      return await request<{ offers: Offer[] | undefined }>(
+        config.subgraphUrl,
+        userOffers,
+        { acctMaker: wallet }
+      );
+    },
+  });
+
   return (
     <TabsContent value="accountOffers">
       <Card>
@@ -131,14 +146,14 @@ export default function AccountOffers({
               <>
                 <div className="mb-4">
                   <h3 className="text-sm font-medium mb-2">Open Offers</h3>
-                  {paginatedAccountOffers
+                  {paginatedAccountOffers?.offers
                     ?.filter((o) => !o.closed)
                     .map((offer) => (
                       <AccountOfferItem key={offer.id} offer={offer} />
                     ))}
 
-                  {paginatedAccountOffers?.filter((o) => !o.closed).length ===
-                    0 && (
+                  {paginatedAccountOffers?.offers?.filter((o) => !o.closed)
+                    .length === 0 && (
                     <div className="text-center py-4 text-sm text-muted-foreground">
                       No open offers
                     </div>
@@ -147,13 +162,13 @@ export default function AccountOffers({
 
                 <div>
                   <h3 className="text-sm font-medium mb-2">Closed Offers</h3>
-                  {paginatedAccountOffers
+                  {paginatedAccountOffers?.offers
                     ?.filter((o) => o.closed)
                     .map((offer) => (
                       <AccountOfferItem key={offer.id} offer={offer} />
                     ))}
-                  {paginatedAccountOffers?.filter((o) => o.closed).length ===
-                    0 && (
+                  {paginatedAccountOffers?.offers?.filter((o) => o.closed)
+                    .length === 0 && (
                     <div className="text-center py-4 text-sm text-muted-foreground">
                       No closed offers
                     </div>
