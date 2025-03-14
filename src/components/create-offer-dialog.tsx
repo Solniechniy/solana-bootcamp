@@ -24,22 +24,21 @@ import { toast } from "sonner";
 import { EscrowProgram } from "@/solana-service/program";
 import { clusterApiUrl, Connection, PublicKey } from "@solana/web3.js";
 import { WalletAdapterNetwork } from "@solana/wallet-adapter-base";
-import { useAnchorWallet } from "@solana/wallet-adapter-react";
+import { useAnchorWallet, useWallet } from "@solana/wallet-adapter-react";
 
 import { Wallet } from "@coral-xyz/anchor";
 import { getMetadata, METADATA } from "@/utils";
 
 interface CreateOfferDialogProps {
   isWalletConnected: boolean;
-  onConnectWallet: () => Promise<void>;
 }
 
 export function CreateOfferDialog({
   isWalletConnected,
-  onConnectWallet,
 }: CreateOfferDialogProps) {
   const [isOpen, setIsOpen] = useState(false);
   const [isSubmitting, setIsSubmitting] = useState(false);
+  const { connect, wallets, select } = useWallet();
   const wallet = useAnchorWallet();
   const [formData, setFormData] = useState({
     tokenA: "9NCKufE7BQrTXTang2WjXjBe2vdrfKArRMq2Nwmn4o8S",
@@ -52,7 +51,8 @@ export function CreateOfferDialog({
     e.preventDefault();
 
     if (!isWalletConnected) {
-      await onConnectWallet();
+      select(wallets[0].adapter.name);
+      await connect();
       return;
     }
 

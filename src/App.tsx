@@ -59,7 +59,8 @@ const App: React.FC = () => {
     accountOffers: 1,
   });
 
-  const { connect, connected, publicKey, disconnect } = useWallet();
+  const { connect, connected, publicKey, disconnect, select, wallets } =
+    useWallet();
 
   const ITEMS_PER_PAGE = 5;
 
@@ -85,35 +86,39 @@ const App: React.FC = () => {
   const connectWallet = async () => {
     setLoading(true);
     try {
-      console.log("here wallet");
-      setIsWalletConnected(true);
+      select(wallets[0].adapter.name);
       await connect();
+      return;
     } catch (e) {
       toast.error("Error connecting to wallet");
     }
   };
 
-  const takeOffer = async (offer: Offer) => {
+  const onTakeOffer = async () => {
+    setLoading(true);
     if (!isWalletConnected) {
+      select(wallets[0].adapter.name);
+      await connect();
       return;
     }
+    try {
+      const connection = new Connection(
+        clusterApiUrl(WalletAdapterNetwork.Devnet)
+      );
+      if (!wallet || !selectedOffer) return;
 
-    setSelectedOffer(offer);
-  };
-
-  const onTakeOffer = async () => {
-    const connection = new Connection(
-      clusterApiUrl(WalletAdapterNetwork.Devnet)
-    );
-    if (!wallet || !selectedOffer) return;
-
-    const contract = new EscrowProgram(connection, wallet as Wallet);
-    await contract.takeOffer(
-      new PublicKey(selectedOffer?.acctMaker),
-      new PublicKey(selectedOffer?.acctOffer),
-      new PublicKey(selectedOffer?.acctTokenMintA),
-      new PublicKey(selectedOffer?.acctTokenMintB)
-    );
+      const contract = new EscrowProgram(connection, wallet as Wallet);
+      await contract.takeOffer(
+        new PublicKey(selectedOffer?.acctMaker),
+        new PublicKey(selectedOffer?.acctOffer),
+        new PublicKey(selectedOffer?.acctTokenMintA),
+        new PublicKey(selectedOffer?.acctTokenMintB)
+      );
+    } catch (e) {
+      toast.error("Error taking offer");
+    } finally {
+      setLoading(false);
+    }
   };
 
   const handlePageChange = (tab: string, page: number) => {
@@ -146,7 +151,6 @@ const App: React.FC = () => {
           <TabsContent value="orders">
             <OffersPage
               isWalletConnected={isWalletConnected}
-              connectWallet={connectWallet}
               paginatedOffers={paginatedOffers}
               currentPage={currentPage.orders}
               totalPages={totalPages.orders}
@@ -160,7 +164,7 @@ const App: React.FC = () => {
               currentPage={currentPage.openOffers}
               totalPages={totalPages.openOffers}
               onPageChange={(page) => handlePageChange("openOffers", page)}
-              onTakeOffer={takeOffer}
+              onTakeOffer={(offer: Offer) => setSelectedOffer(offer)}
             />
           </TabsContent>
 

@@ -16,7 +16,7 @@ interface OpenOffersPageProps {
   currentPage: number;
   totalPages: number;
   onPageChange: (page: number) => void;
-  onTakeOffer: (offer: Offer) => Promise<void>;
+  onTakeOffer: (offer: Offer) => void;
 }
 
 export const OpenOffersPage: React.FC<OpenOffersPageProps> = ({

@@ -14,7 +14,6 @@ import { Offer } from "@/types/offer";
 
 interface OffersPageProps {
   isWalletConnected: boolean;
-  connectWallet: () => Promise<void>;
   paginatedOffers: Offer[] | undefined;
   currentPage: number;
   totalPages: number;
@@ -23,7 +22,6 @@ interface OffersPageProps {
 
 export const OffersPage: React.FC<OffersPageProps> = ({
   isWalletConnected,
-  connectWallet,
   paginatedOffers = [],
   currentPage,
   totalPages,
@@ -36,10 +34,7 @@ export const OffersPage: React.FC<OffersPageProps> = ({
         <CardDescription>
           View all orders that have been created on the platform.
         </CardDescription>
-        <CreateOfferDialog
-          isWalletConnected={isWalletConnected}
-          onConnectWallet={connectWallet}
-        />
+        <CreateOfferDialog isWalletConnected={isWalletConnected} />
       </CardHeader>
       <CardContent>
         <div className="space-y-4">
