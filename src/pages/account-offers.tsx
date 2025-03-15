@@ -17,35 +17,33 @@ import {
   TooltipProvider,
   TooltipTrigger,
 } from "@/components/ui/tooltip";
-import { getMetadata, getUserOffers, truncateAddress } from "@/utils";
+import { getUserOffers, truncateAddress } from "@/utils";
 import { Button } from "@/components/ui/button";
 import { Offer } from "@/types/offer";
 import { config } from "@/solana-service/config";
 import request from "graphql-request";
 import { useQuery } from "@tanstack/react-query";
 import { useWallet } from "@solana/wallet-adapter-react";
-import { useMetadataLoading } from "@/hooks/useMetadata";
+import { useMetadata } from "@/hooks/useMetadata";
 
 function AccountOfferItem({ offer }: { offer: Offer }) {
-  const metadataTokenA = getMetadata(offer.acctTokenMintA);
-  const metadataTokenB = getMetadata(offer.acctTokenMintB);
-  const backupMetadata = useMetadataLoading(offer.acctTokenMintA);
-  console.log(backupMetadata);
+  const { data: metadataTokenA } = useMetadata(offer.acctTokenMintA);
+  const { data: metadataTokenB } = useMetadata(offer.acctTokenMintB);
 
   return (
     <div className="flex items-center justify-between p-4 border rounded-lg mb-2">
       <div className="flex items-center gap-3">
         <div className="flex items-center gap-1">
-          <span className="text-xl">{metadataTokenA.icon}</span>
+          <span className="text-xl">{metadataTokenA?.icon}</span>
           <span className="font-medium">
-            {offer.tokenAOfferedAmount.toString()} {metadataTokenA.symbol}
+            {offer.tokenAOfferedAmount.toString()} {metadataTokenA?.symbol}
           </span>
         </div>
         <span className="text-muted-foreground">→</span>
         <div className="flex items-center gap-1">
-          <span className="text-xl">{metadataTokenB.icon}</span>
+          <span className="text-xl">{metadataTokenB?.icon}</span>
           <span className="font-medium">
-            {offer.tokenBWantedAmount.toString()} {metadataTokenB.symbol}
+            {offer.tokenBWantedAmount.toString()} {metadataTokenB?.symbol}
           </span>
         </div>
       </div>

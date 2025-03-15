@@ -9,8 +9,8 @@ import {
 
 import { Button } from "@/components/ui/button";
 import { Loader2 } from "lucide-react";
+import { useMetadata } from "@/hooks/useMetadata";
 
-import { getMetadata } from "@/utils";
 import { Offer } from "@/types/offer";
 
 export default function TakeOfferDialog({
@@ -28,6 +28,13 @@ export default function TakeOfferDialog({
   onTakeOffer: () => void;
   loading: boolean;
 }) {
+  const { data: firstTokenMetadata } = useMetadata(
+    selectedOffer?.acctTokenMintA
+  );
+  const { data: secondTokenMetadata } = useMetadata(
+    selectedOffer?.acctTokenMintB
+  );
+
   return (
     <Dialog
       open={selectedOffer !== null}
@@ -39,11 +46,7 @@ export default function TakeOfferDialog({
           <DialogDescription>
             {!isWalletConnected
               ? "Connect your wallet to take this offer."
-              : `You're about to exchange ${
-                  selectedOffer?.tokenAOfferedAmount
-                } ${getMetadata(selectedOffer?.acctTokenMintA).symbol} for ${
-                  selectedOffer?.tokenBWantedAmount
-                } ${getMetadata(selectedOffer?.acctTokenMintB).symbol}.`}
+              : `You're about to exchange ${selectedOffer?.tokenAOfferedAmount} ${firstTokenMetadata?.symbol} for ${selectedOffer?.tokenBWantedAmount} ${secondTokenMetadata?.symbol}.`}
           </DialogDescription>
         </DialogHeader>
 
@@ -51,22 +54,18 @@ export default function TakeOfferDialog({
           <div className="py-4">
             <div className="flex items-center justify-center gap-4 mb-4">
               <div className="text-center">
-                <div className="text-2xl mb-1">
-                  {getMetadata(selectedOffer?.acctTokenMintA).icon}
-                </div>
+                <div className="text-2xl mb-1">{firstTokenMetadata?.icon}</div>
                 <div className="font-medium">
                   {selectedOffer.tokenAOfferedAmount.toString()}{" "}
-                  {getMetadata(selectedOffer?.acctTokenMintA).symbol}
+                  {firstTokenMetadata?.symbol}
                 </div>
               </div>
               <div className="text-xl">→</div>
               <div className="text-center">
-                <div className="text-2xl mb-1">
-                  {getMetadata(selectedOffer?.acctTokenMintB).icon}
-                </div>
+                <div className="text-2xl mb-1">{secondTokenMetadata?.icon}</div>
                 <div className="font-medium">
                   {selectedOffer.tokenBWantedAmount.toString()}{" "}
-                  {getMetadata(selectedOffer?.acctTokenMintB).symbol}
+                  {secondTokenMetadata?.symbol}
                 </div>
               </div>
             </div>

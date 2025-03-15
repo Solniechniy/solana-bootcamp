@@ -14,24 +14,15 @@ export function truncateAddress(address: string, length: number = 8): string {
 export const METADATA = {
   ["GdHsojisNu8RH92k4JzF1ULzutZgfg8WRL5cHkoW2HCK"]: {
     address: "GdHsojisNu8RH92k4JzF1ULzutZgfg8WRL5cHkoW2HCK",
-    decimals: 9,
     icon: "🌭",
     symbol: "HOT",
   },
   ["9NCKufE7BQrTXTang2WjXjBe2vdrfKArRMq2Nwmn4o8S"]: {
     address: "9NCKufE7BQrTXTang2WjXjBe2vdrfKArRMq2Nwmn4o8S",
-    decimals: 9,
     icon: "🍔",
     symbol: "Burger",
   },
 };
-
-export function getMetadata(tokenId?: string) {
-  if (METADATA[tokenId as keyof typeof METADATA]) {
-    return METADATA[tokenId as keyof typeof METADATA];
-  }
-  return { decimals: 9, icon: "🍔", symbol: "UNKNOWN" };
-}
 
 export const query = gql`
   {

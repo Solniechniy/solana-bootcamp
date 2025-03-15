@@ -11,7 +11,6 @@ A modern React-based frontend application for interacting with Solana Escrow sma
 - 📋 View and manage your created offers
 - 🔄 Take open offers from other users
 - 📱 Responsive and modern UI using Tailwind CSS and shadcn
-- 🔍 Search and filter offers
 - 📊 Pagination for better performance
 
 ## Prerequisites

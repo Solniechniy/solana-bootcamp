@@ -1,27 +1,28 @@
+import { useMetadata } from "@/hooks/useMetadata";
 import { Offer } from "@/types/offer";
 
-import { getMetadata, truncateAddress } from "@/utils";
+import { truncateAddress } from "@/utils";
 import { LockOpen, Lock } from "lucide-react";
 
 export function OfferItem({ offer }: { offer: Offer }) {
-  const metadataTokenA = getMetadata(offer.acctTokenMintA);
-  const metadataTokenB = getMetadata(offer.acctTokenMintB);
+  const { data: metadataTokenA } = useMetadata(offer.acctTokenMintA.toString());
+  const { data: metadataTokenB } = useMetadata(offer.acctTokenMintB.toString());
 
   return (
     <div className="flex items-center justify-between p-4 border rounded-lg">
       <div className="flex items-start flex-col gap-3">
         <div className="flex items-center flex-row gap-3">
           <div className="flex items-center gap-1">
-            <span className="text-xl">{metadataTokenA.icon}</span>
+            <span className="text-xl">{metadataTokenA?.icon}</span>
             <span className="font-medium">
-              {offer.tokenAOfferedAmount.toString()} {metadataTokenA.symbol}
+              {offer.tokenAOfferedAmount.toString()} {metadataTokenA?.symbol}
             </span>
           </div>
           <span className="text-muted-foreground">→</span>
           <div className="flex items-center gap-1">
-            <span className="text-xl">{metadataTokenB.icon}</span>
+            <span className="text-xl">{metadataTokenB?.icon}</span>
             <span className="font-medium">
-              {offer.tokenBWantedAmount.toString()} {metadataTokenB.symbol}
+              {offer.tokenBWantedAmount.toString()} {metadataTokenB?.symbol}
             </span>
           </div>
         </div>

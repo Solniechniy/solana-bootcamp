@@ -27,8 +27,9 @@ import { WalletAdapterNetwork } from "@solana/wallet-adapter-base";
 import { useAnchorWallet, useWallet } from "@solana/wallet-adapter-react";
 
 import { Wallet } from "@coral-xyz/anchor";
-import { getMetadata, METADATA } from "@/utils";
+import { METADATA } from "@/utils";
 import { useQueryClient } from "@tanstack/react-query";
+import { useMetadata } from "@/hooks/useMetadata";
 
 interface CreateOfferDialogProps {
   isWalletConnected: boolean;
@@ -48,6 +49,8 @@ export function CreateOfferDialog({
     amountB: "0",
   });
   const queryClient = useQueryClient();
+  const { data: firstTokenMetadata } = useMetadata(formData.tokenA);
+  const { data: secondTokenMetadata } = useMetadata(formData.tokenB);
 
   const handleSubmit = async (e: React.FormEvent) => {
     e.preventDefault();
@@ -132,8 +135,8 @@ export function CreateOfferDialog({
     if (amountA <= 0 || amountB <= 0) return "Invalid amounts";
 
     const rate = amountB / amountA;
-    return `1 ${getMetadata(formData.tokenA).symbol} = ${rate.toFixed(6)} ${
-      getMetadata(formData.tokenB).symbol
+    return `1 ${firstTokenMetadata?.symbol} = ${rate.toFixed(6)} ${
+      secondTokenMetadata?.symbol
     }`;
   };
 
