@@ -1,21 +1,11 @@
 import React from "react";
 
 import { useEffect, useState } from "react";
-import { Button } from "@/components/ui/button";
 
-import {
-  Dialog,
-  DialogContent,
-  DialogDescription,
-  DialogFooter,
-  DialogHeader,
-  DialogTitle,
-} from "@/components/ui/dialog";
 import { Tabs, TabsContent, TabsList, TabsTrigger } from "@/components/ui/tabs";
 import "@solana/wallet-adapter-react-ui/styles.css";
 
 import { toast } from "sonner";
-import { Loader2 } from "lucide-react";
 import { useAnchorWallet, useWallet } from "@solana/wallet-adapter-react";
 
 import { useQuery, useQueryClient } from "@tanstack/react-query";
@@ -33,7 +23,9 @@ import AccountOffers from "@/pages/account-offers";
 import { Offer } from "@/types/offer";
 
 import { Toaster } from "sonner";
-import { getMetadata, query } from "./utils";
+import { query } from "./utils";
+
+import TakeOfferDialog from "@/components/dialogs/take-offer-dialog";
 
 const App: React.FC = () => {
   const [isWalletConnected, setIsWalletConnected] = useState(false);
@@ -177,87 +169,14 @@ const App: React.FC = () => {
             />
           </TabsContent>
 
-          <Dialog
-            open={selectedOffer !== null}
-            onOpenChange={(open) => !open && setSelectedOffer(null)}
-          >
-            <DialogContent>
-              <DialogHeader>
-                <DialogTitle>Take Offer</DialogTitle>
-                <DialogDescription>
-                  {!isWalletConnected
-                    ? "Connect your wallet to take this offer."
-                    : `You're about to exchange ${
-                        selectedOffer?.tokenAOfferedAmount
-                      } ${
-                        getMetadata(selectedOffer?.acctTokenMintA).symbol
-                      } for ${selectedOffer?.tokenBWantedAmount} ${
-                        getMetadata(selectedOffer?.acctTokenMintB).symbol
-                      }.`}
-                </DialogDescription>
-              </DialogHeader>
-
-              {selectedOffer && (
-                <div className="py-4">
-                  <div className="flex items-center justify-center gap-4 mb-4">
-                    <div className="text-center">
-                      <div className="text-2xl mb-1">
-                        {getMetadata(selectedOffer?.acctTokenMintA).icon}
-                      </div>
-                      <div className="font-medium">
-                        {selectedOffer.tokenAOfferedAmount.toString()}{" "}
-                        {getMetadata(selectedOffer?.acctTokenMintA).symbol}
-                      </div>
-                    </div>
-                    <div className="text-xl">→</div>
-                    <div className="text-center">
-                      <div className="text-2xl mb-1">
-                        {getMetadata(selectedOffer?.acctTokenMintB).icon}
-                      </div>
-                      <div className="font-medium">
-                        {selectedOffer.tokenBWantedAmount.toString()}{" "}
-                        {getMetadata(selectedOffer?.acctTokenMintB).symbol}
-                      </div>
-                    </div>
-                  </div>
-                </div>
-              )}
-
-              <DialogFooter>
-                {!isWalletConnected ? (
-                  <Button
-                    onClick={connectWallet}
-                    disabled={loading}
-                    className="w-full"
-                  >
-                    {loading ? (
-                      <>
-                        <Loader2 className="mr-2 h-4 w-4 animate-spin" />
-                        Connecting...
-                      </>
-                    ) : (
-                      "Connect Wallet"
-                    )}
-                  </Button>
-                ) : (
-                  <Button
-                    onClick={onTakeOffer}
-                    disabled={loading}
-                    className="w-full"
-                  >
-                    {loading ? (
-                      <>
-                        <Loader2 className="mr-2 h-4 w-4 animate-spin" />
-                        Processing...
-                      </>
-                    ) : (
-                      "Confirm Transaction"
-                    )}
-                  </Button>
-                )}
-              </DialogFooter>
-            </DialogContent>
-          </Dialog>
+          <TakeOfferDialog
+            selectedOffer={selectedOffer}
+            setSelectedOffer={setSelectedOffer}
+            isWalletConnected={isWalletConnected}
+            connectWallet={connectWallet}
+            onTakeOffer={onTakeOffer}
+            loading={loading}
+          />
         </Tabs>
       </div>
       <Toaster />

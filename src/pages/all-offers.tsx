@@ -7,7 +7,7 @@ import {
   CardContent,
   CardFooter,
 } from "@/components/ui/card";
-import { CreateOfferDialog } from "@/components/create-offer-dialog";
+import { CreateOfferDialog } from "@/components/dialogs/create-offer-dialog";
 import { OfferItem } from "@/components/offer-item";
 import { PaginationControl } from "@/components/pagination-control";
 import { Offer } from "@/types/offer";

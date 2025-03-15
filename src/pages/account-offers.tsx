@@ -24,10 +24,13 @@ import { config } from "@/solana-service/config";
 import request from "graphql-request";
 import { useQuery } from "@tanstack/react-query";
 import { useWallet } from "@solana/wallet-adapter-react";
+import { useMetadataLoading } from "@/hooks/useMetadata";
 
 function AccountOfferItem({ offer }: { offer: Offer }) {
   const metadataTokenA = getMetadata(offer.acctTokenMintA);
   const metadataTokenB = getMetadata(offer.acctTokenMintB);
+  const backupMetadata = useMetadataLoading(offer.acctTokenMintA);
+  console.log(backupMetadata);
 
   return (
     <div className="flex items-center justify-between p-4 border rounded-lg mb-2">
